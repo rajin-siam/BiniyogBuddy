@@ -22,6 +22,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Transactional
     public AuthResponse register(AuthRegisterRequest request) {
@@ -52,5 +53,12 @@ public class AuthService {
         }
 
         return new AuthResponse(jwtUtil.generateToken(user));
+    }
+
+    public void logout(String token) {
+        long ttlSeconds = (jwtUtil.getExpiration(token).getTime() - System.currentTimeMillis()) / 1000;
+        if (ttlSeconds > 0) {
+            tokenBlacklistService.blacklist(token, ttlSeconds);
+        }
     }
 }

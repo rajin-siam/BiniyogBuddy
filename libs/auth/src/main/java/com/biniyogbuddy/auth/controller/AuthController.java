@@ -5,6 +5,7 @@ import com.biniyogbuddy.auth.dto.AuthRegisterRequest;
 import com.biniyogbuddy.auth.dto.AuthResponse;
 import com.biniyogbuddy.auth.service.AuthService;
 import com.biniyogbuddy.common.dto.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,5 +33,11 @@ public class AuthController {
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody AuthLoginRequest request) {
         AuthResponse authResponse = authService.login(request);
         return ResponseEntity.ok(new ApiResponse<>("Login successful", "success", authResponse));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<Void>> logout(HttpServletRequest request) {
+        authService.logout(request.getHeader("Authorization").substring(7));
+        return ResponseEntity.ok(new ApiResponse<>("Logout successful", "success", null));
     }
 }
