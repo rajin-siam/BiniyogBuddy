@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: BiniyogBuddy
+
+  messages:
+    basename: messages/auth, messages/general
+    encoding: UTF-8
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/biniyogbuddy
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: mbstusiam
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: strongpassword123
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 2
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration-ms: 86400000
+
+logging:
+  level:
+    root: INFO
+    com.biniyogbuddy: DEBUG
