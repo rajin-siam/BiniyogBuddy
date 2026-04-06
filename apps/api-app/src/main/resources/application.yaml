@@ -1,3 +1,6 @@
 spring:
+  application:
+    name: BiniyogBuddy
+
   profiles:
     active: ${SPRING_PROFILES_ACTIVE}
