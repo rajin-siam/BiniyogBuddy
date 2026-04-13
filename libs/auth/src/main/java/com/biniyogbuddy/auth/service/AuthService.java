@@ -11,9 +11,8 @@ import com.biniyogbuddy.users.entity.ExperienceLevel;
 import com.biniyogbuddy.users.entity.Role;
 import com.biniyogbuddy.users.entity.User;
 import com.biniyogbuddy.users.repository.UserRepository;
+import com.biniyogbuddy.common.config.MessageResource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +26,12 @@ public class AuthService {
     private final JwtUtil jwtUtil;
     private final TokenBlacklistService tokenBlacklistService;
     private final RefreshTokenService refreshTokenService;
-    private final MessageSource messageSource;
+    private final MessageResource messageResource;
 
     @Transactional
     public AuthResponse register(AuthRegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            String message = messageSource.getMessage(
-                    "auth.error.email.duplicate",
-                    new Object[]{request.email()},
-                    LocaleContextHolder.getLocale()
-            );
+            String message = messageResource.getMessage("auth.error.email.duplicate", request.email());
             throw new DuplicateResourceException(message);
         }
 
@@ -55,11 +50,7 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public AuthResponse login(AuthLoginRequest request) {
-        String invalidCredentialsMessage = messageSource.getMessage(
-                "auth.error.invalid.credentials",
-                null,
-                LocaleContextHolder.getLocale()
-        );
+        String invalidCredentialsMessage = messageResource.getMessage("auth.error.invalid.credentials");
 
         User user = userRepository.findByEmail(request.email())
                 .orElseThrow(() -> new InvalidCredentialsException(invalidCredentialsMessage));
@@ -72,11 +63,7 @@ public class AuthService {
     }
 
     public AuthResponse refresh(String refreshToken) {
-        String invalidRefreshMessage = messageSource.getMessage(
-                "auth.error.refresh.invalid",
-                null,
-                LocaleContextHolder.getLocale()
-        );
+        String invalidRefreshMessage = messageResource.getMessage("auth.error.refresh.invalid");
 
         if (!jwtUtil.isTokenValid(refreshToken)) {
             throw new InvalidTokenException(invalidRefreshMessage);

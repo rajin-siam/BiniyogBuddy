@@ -7,12 +7,11 @@ import com.biniyogbuddy.auth.dto.LogoutRequest;
 import com.biniyogbuddy.auth.dto.RefreshTokenRequest;
 import com.biniyogbuddy.auth.service.AuthService;
 import com.biniyogbuddy.common.dto.ApiResponse;
+import com.biniyogbuddy.common.config.MessageResource;
 import com.biniyogbuddy.common.dto.MessageResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,12 +25,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final MessageSource messageSource;
+    private final MessageResource messageResource;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<AuthResponse>> register(@Valid @RequestBody AuthRegisterRequest request) {
         AuthResponse authResponse = authService.register(request);
-        String message = messageSource.getMessage("auth.register.success", null, LocaleContextHolder.getLocale());
+        String message = messageResource.getMessage("auth.register.success");
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse<>(message, "success", authResponse));
     }
@@ -39,14 +38,14 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody AuthLoginRequest request) {
         AuthResponse authResponse = authService.login(request);
-        String message = messageSource.getMessage("auth.login.success", null, LocaleContextHolder.getLocale());
+        String message = messageResource.getMessage("auth.login.success");
         return ResponseEntity.ok(new ApiResponse<>(message, "success", authResponse));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<AuthResponse>> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         AuthResponse authResponse = authService.refresh(request.refreshToken());
-        String message = messageSource.getMessage("auth.refresh.success", null, LocaleContextHolder.getLocale());
+        String message = messageResource.getMessage("auth.refresh.success");
         return ResponseEntity.ok(new ApiResponse<>(message, "success", authResponse));
     }
 
@@ -54,7 +53,7 @@ public class AuthController {
     public ResponseEntity<MessageResponse> logout(HttpServletRequest request, @Valid @RequestBody LogoutRequest logoutRequest) {
         String accessToken = request.getHeader("Authorization").substring(7);
         authService.logout(accessToken, logoutRequest.refreshToken());
-        String message = messageSource.getMessage("auth.logout.success", null, LocaleContextHolder.getLocale());
+        String message = messageResource.getMessage("auth.logout.success");
         return ResponseEntity.ok(new MessageResponse(message));
     }
 }
