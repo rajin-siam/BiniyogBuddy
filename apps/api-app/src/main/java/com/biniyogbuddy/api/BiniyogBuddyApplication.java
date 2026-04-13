@@ -12,8 +12,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication(scanBasePackages = "com.biniyogbuddy")
-@EnableJpaRepositories(basePackages = "com.biniyogbuddy.users.repository")
-@EntityScan(basePackages = "com.biniyogbuddy.users.entity")
+@EnableJpaRepositories(basePackages = {
+        "com.biniyogbuddy.users.repository",
+        "com.biniyogbuddy.stocks.repository"
+})
+@EntityScan(basePackages = {
+                "com.biniyogbuddy.users.entity",
+                "com.biniyogbuddy.stocks.entity"
+})
 public class BiniyogBuddyApplication {
 
     public static void main(String[] args) {
