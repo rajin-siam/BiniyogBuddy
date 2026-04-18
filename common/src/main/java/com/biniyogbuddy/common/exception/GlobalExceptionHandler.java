@@ -30,4 +30,60 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
     }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<MessageResponse> handleInvalidTokenException(InvalidTokenException ex) {
+        MessageParser.ParsedMessage parsed = MessageParser.parse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<MessageResponse> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        MessageParser.ParsedMessage parsed = MessageParser.parse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
+    }
+
+    @ExceptionHandler(PendingVerificationException.class)
+    public ResponseEntity<MessageResponse> handlePendingVerificationException(PendingVerificationException ex) {
+        MessageParser.ParsedMessage parsed = MessageParser.parse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
+    }
+
+    @ExceptionHandler(OtpInvalidException.class)
+    public ResponseEntity<MessageResponse> handleOtpInvalidException(OtpInvalidException ex) {
+        MessageParser.ParsedMessage parsed = MessageParser.parse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
+    }
+
+    @ExceptionHandler(OtpExpiredException.class)
+    public ResponseEntity<MessageResponse> handleOtpExpiredException(OtpExpiredException ex) {
+        MessageParser.ParsedMessage parsed = MessageParser.parse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<MessageResponse> handlePasswordMismatchException(PasswordMismatchException ex) {
+        MessageParser.ParsedMessage parsed = MessageParser.parse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
+    }
+
+    @ExceptionHandler(OtpResendLimitExceededException.class)
+    public ResponseEntity<MessageResponse> handleOtpResendLimitExceededException(OtpResendLimitExceededException ex) {
+        MessageParser.ParsedMessage parsed = MessageParser.parse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<MessageResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        MessageParser.ParsedMessage parsed = MessageParser.parse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
+    }
 }

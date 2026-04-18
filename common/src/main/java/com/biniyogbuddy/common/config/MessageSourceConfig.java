@@ -11,7 +11,7 @@ public class MessageSourceConfig {
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("messages/auth");
-        messageSource.addBasenames("messages/general");
+        messageSource.addBasenames("messages/general", "messages/stock");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setCacheSeconds(3600);
         return messageSource;
