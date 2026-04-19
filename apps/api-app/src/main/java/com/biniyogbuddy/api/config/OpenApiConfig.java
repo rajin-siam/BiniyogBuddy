@@ -39,20 +39,20 @@ public class OpenApiConfig {
 
         private static final Map<String, Map<String, Object>> SCHEMA_EXAMPLES = Map.of(
                 "AuthRegisterRequest", Map.of(
-                        "email", "rafiq@example.com",
-                        "password", "P@ssw0rd123",
-                        "username", "rafiq_ahmed",
-                        "fullName", "Rafiq Ahmed"
+                        "email", "mdrajinmashrursiam@gmail.com",
+                        "password", "iamsiam5000",
+                        "username", "rajin_siam",
+                        "fullName", "Md. Rajin Mashrur Siam"
                 ),
                 "AuthLoginRequest", Map.of(
-                        "email", "rafiq@example.com",
-                        "password", "P@ssw0rd123"
+                        "email", "mdrajinmashrursiam@gmail.com",
+                        "password", "iamsiam5000"
                 ),
                 "RefreshTokenRequest", Map.of(
-                        "refreshToken", "<paste-your-refresh-token-here>"
+                        "refreshToken", ""
                 ),
                 "LogoutRequest", Map.of(
-                        "refreshToken", "<paste-your-refresh-token-here>"
+                        "refreshToken", ""
                 ),
                 "StockJournalRequest", Map.ofEntries(
                         Map.entry("stockName", "Square Pharmaceuticals Ltd."),

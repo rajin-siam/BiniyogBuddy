@@ -6,22 +6,20 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
-
 @Entity
-@Table(name = "stock_journal", indexes = {
-        @Index(name = "idx_stock_journal_user_id", columnList = "user_id")
+@Table(name = "stocks", indexes = {
+        @Index(name = "idx_stocks_user_id", columnList = "user_id")
 })
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-public class StockJournal extends BaseEntity {
+public class Stock extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stock_journal_seq_gen")
-    @SequenceGenerator(name = "stock_journal_seq_gen", sequenceName = "stock_journal_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stock_seq_gen")
+    @SequenceGenerator(name = "stock_seq_gen", sequenceName = "stock_seq", allocationSize = 1)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,14 +38,4 @@ public class StockJournal extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Sector sector;
-
-    @Column(name = "purchase_price", nullable = false, precision = 12, scale = 2)
-    private BigDecimal purchasePrice;
-
-    @Column(nullable = false)
-    private Integer quantity;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "trade_type", nullable = false)
-    private TradeType tradeType;
 }

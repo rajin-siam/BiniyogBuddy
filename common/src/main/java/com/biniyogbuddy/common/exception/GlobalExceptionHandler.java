@@ -86,4 +86,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
     }
+
+    @ExceptionHandler(InsufficientSharesException.class)
+    public ResponseEntity<MessageResponse> handleInsufficientSharesException(InsufficientSharesException ex) {
+        MessageParser.ParsedMessage parsed = MessageParser.parse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(new MessageResponse(parsed.message(), null, parsed.errorCode()));
+    }
 }

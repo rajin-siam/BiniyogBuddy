@@ -1,4 +1,4 @@
-package com.biniyogbuddy.stocks.entity;
+package com.biniyogbuddy.trades.entity;
 
 public enum TradeType {
     LEARNING_ONLY,
