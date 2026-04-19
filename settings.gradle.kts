@@ -5,6 +5,7 @@ include(
     "libs:users",
     "libs:auth",
     "libs:stocks",
+    "libs:trades",
     "apps:api-app"
 )
 

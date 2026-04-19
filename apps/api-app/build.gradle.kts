@@ -19,6 +19,7 @@ dependencies {
     implementation(project(":libs:users"))
     implementation(project(":libs:auth"))
     implementation(project(":libs:stocks"))
+    implementation(project(":libs:trades"))
 
     // Spring Web & API
     implementation("org.springframework.boot:spring-boot-starter-web")

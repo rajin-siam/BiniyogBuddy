@@ -1,12 +1,9 @@
 package com.biniyogbuddy.stocks.dto;
 
 import com.biniyogbuddy.stocks.entity.Sector;
-import com.biniyogbuddy.stocks.entity.TradeType;
 import jakarta.validation.constraints.*;
 
-import java.math.BigDecimal;
-
-public record StockJournalRequest(
+public record StockRequest(
         @NotBlank
         @Size(max = 100)
         String stockName,
@@ -19,17 +16,5 @@ public record StockJournalRequest(
         String cseCode,
 
         @NotNull
-        Sector sector,
-
-        @NotNull
-        @DecimalMin(value = "0.01", message = "Purchase price must be greater than 0")
-        @Digits(integer = 10, fraction = 2)
-        BigDecimal purchasePrice,
-
-        @NotNull
-        @Min(value = 1, message = "Quantity must be at least 1")
-        Integer quantity,
-
-        @NotNull
-        TradeType tradeType
+        Sector sector
 ) {}

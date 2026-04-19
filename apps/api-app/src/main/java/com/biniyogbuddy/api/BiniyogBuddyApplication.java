@@ -8,11 +8,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication(scanBasePackages = "com.biniyogbuddy")
 @EnableJpaRepositories(basePackages = {
         "com.biniyogbuddy.users.repository",
-        "com.biniyogbuddy.stocks.repository"
+        "com.biniyogbuddy.stocks.repository",
+        "com.biniyogbuddy.trades.repository"
 })
 @EntityScan(basePackages = {
                 "com.biniyogbuddy.users.entity",
-                "com.biniyogbuddy.stocks.entity"
+                "com.biniyogbuddy.stocks.entity",
+                "com.biniyogbuddy.trades.entity"
+
 })
 public class BiniyogBuddyApplication {
 
