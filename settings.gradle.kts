@@ -9,3 +9,7 @@ include(
     "apps:api-app"
 )
 
+
+include("libs:scrapper")
+include("libs:scrapper")
+include("libs:market")

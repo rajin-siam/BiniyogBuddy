@@ -1,6 +1,5 @@
 package com.biniyogbuddy.stocks.repository;
 
-import com.biniyogbuddy.stocks.entity.StockPrice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

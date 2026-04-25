@@ -5,7 +5,6 @@ import com.biniyogbuddy.common.exception.ResourceNotFoundException;
 import com.biniyogbuddy.stocks.dto.StockPriceRequest;
 import com.biniyogbuddy.stocks.dto.StockPriceResponse;
 import com.biniyogbuddy.stocks.entity.Stock;
-import com.biniyogbuddy.stocks.entity.StockPrice;
 import com.biniyogbuddy.stocks.repository.StockPriceRepository;
 import com.biniyogbuddy.stocks.repository.StockRepository;
 import com.biniyogbuddy.users.entity.User;
