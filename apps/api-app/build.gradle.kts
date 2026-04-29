@@ -20,6 +20,8 @@ dependencies {
     implementation(project(":libs:auth"))
     implementation(project(":libs:stocks"))
     implementation(project(":libs:trades"))
+    implementation(project(":libs:market"))
+    implementation(project(":libs:scraper"))
 
     // Spring Web & API
     implementation("org.springframework.boot:spring-boot-starter-web")

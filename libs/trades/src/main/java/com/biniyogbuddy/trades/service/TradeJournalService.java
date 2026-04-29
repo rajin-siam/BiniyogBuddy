@@ -124,7 +124,7 @@ public class TradeJournalService {
     }
 
     private Stock findStockOwnedByUser(Long stockId, Long userId) {
-        return stockRepository.findByIdAndUserId(stockId, userId)
+        return stockRepository.findById(stockId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messageResource.getMessage("stock.error.not.found", stockId)));
     }
@@ -144,7 +144,7 @@ public class TradeJournalService {
 
     private Comparator<TradeJournal> buildComparator(String sortBy, String sortDir) {
         Comparator<TradeJournal> comparator = switch (sortBy != null ? sortBy.toLowerCase() : "date") {
-            case "stockcode" -> Comparator.comparing(t -> t.getStock().getDseCode());
+            case "stockcode" -> Comparator.comparing(t -> t.getStock().getTradingCode());
             case "tradetype" -> Comparator.comparing(t -> t.getTradeDirection().name());
             default -> Comparator.comparing(TradeJournal::getTradeDate);
         };
@@ -155,8 +155,8 @@ public class TradeJournalService {
         return new TradeJournalResponse(
                 trade.getId(),
                 trade.getStock().getId(),
-                trade.getStock().getStockName(),
-                trade.getStock().getDseCode(),
+                trade.getStock().getCompanyName(),
+                trade.getStock().getTradingCode(),
                 trade.getTradeDirection(),
                 trade.getTradeType(),
                 trade.getTradeDate(),

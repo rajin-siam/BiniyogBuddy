@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 public record TradeJournalResponse(
         Long id,
         Long stockId,
-        String stockName,
-        String dseCode,
+        String companyName,
+        String tradingCode,
         TradeDirection tradeDirection,
         TradeType tradeType,
         LocalDate tradeDate,

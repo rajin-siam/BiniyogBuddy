@@ -1,41 +1,66 @@
 package com.biniyogbuddy.stocks.entity;
 
-import com.biniyogbuddy.common.entity.BaseEntity;
-import com.biniyogbuddy.users.entity.User;
 import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "stocks", indexes = {
-        @Index(name = "idx_stocks_user_id", columnList = "user_id")
-})
+@Table(name = "stocks")
 @Data
-@EqualsAndHashCode(callSuper = true)
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
-public class Stock extends BaseEntity {
+public class Stock {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stock_seq_gen")
     @SequenceGenerator(name = "stock_seq_gen", sequenceName = "stock_seq", allocationSize = 1)
     private Long id;
 
+    @Column(name = "trading_code", unique = true, nullable = false)
+    private String tradingCode;
+
+    @Column(name = "company_name", nullable = false)
+    private String companyName;
+
+    @Column(name = "short_name")
+    private String shortName;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "sector_id")
+    private Sector sector;
 
-    @Column(name = "stock_name", nullable = false, length = 100)
-    private String stockName;
+    @Column(length = 2)
+    private String category;
 
-    @Column(name = "dse_code", nullable = false, length = 12)
-    private String dseCode;
+    @Column(name = "listing_date")
+    private LocalDate listingDate;
 
-    @Column(name = "cse_code", length = 12)
-    private String cseCode;
+    private String website;
+
+    @Column(name = "total_shares")
+    private Long totalShares;
+
+    @Column(name = "paid_up_capital_mn", precision = 18, scale = 4)
+    private BigDecimal paidUpCapitalMn;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Sector sector;
+    private StockStatus status = StockStatus.LISTED;
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

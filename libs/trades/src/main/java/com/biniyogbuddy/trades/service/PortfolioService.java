@@ -74,8 +74,8 @@ public class PortfolioService {
 
                     return new HoldingResponse(
                             stock.getId(),
-                            stock.getStockName(),
-                            stock.getDseCode(),
+                            stock.getCompanyName(),
+                            stock.getTradingCode(),
                             net,
                             avgBuyPrice,
                             totalBuyValue
