@@ -16,9 +16,9 @@ public class ScraperScheduler {
     private final DsePriceFetcher fetcher;
     private final ScraperIngestionService ingestionService;
 
-    // Runs immediately on startup (initialDelay = 0), then every hour after
-    // each run completes (fixedDelay = 3_600_000 ms).
-    @Scheduled(initialDelay = 15_000, fixedDelay = 3_600_000)
+    // Runs immediately on startup (initialDelay = 15s), then every 10 minutes after
+    // each run completes (fixedDelay = 600_000 ms = 10 minutes).
+    @Scheduled(initialDelay = 15_000, fixedDelay = 600_000)
     public void scrapeAndIngest() {
         log.info("Scrape job started");
         try {
