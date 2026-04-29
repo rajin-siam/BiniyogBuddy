@@ -3,8 +3,6 @@ package com.biniyogbuddy.market.dto;
 import com.biniyogbuddy.market.entity.MarketStatus;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public record MarketSummaryResponse(
         BigDecimal dsexValue,
@@ -22,7 +20,5 @@ public record MarketSummaryResponse(
         Long totalVolume,
         Integer advances,
         Integer declines,
-        Integer unchanged,
-        LocalDate tradeDate,
-        LocalDateTime fetchedAt
+        Integer unchanged
 ) {}
