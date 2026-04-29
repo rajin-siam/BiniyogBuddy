@@ -33,17 +33,14 @@ public class IndexHistory {
     @Column(name = "trade_date", nullable = false)
     private LocalDate tradeDate;
 
-    @Column(precision = 12, scale = 4)
-    private BigDecimal open;
-
-    @Column(precision = 12, scale = 4)
-    private BigDecimal high;
-
-    @Column(precision = 12, scale = 4)
-    private BigDecimal low;
-
     @Column(precision = 12, scale = 4, nullable = false)
     private BigDecimal close;
+
+    @Column(precision = 12, scale = 4)
+    private BigDecimal change;
+
+    @Column(name = "change_pct", precision = 8, scale = 4)
+    private BigDecimal changePct;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -10,6 +10,5 @@ include(
 )
 
 
-include("libs:scrapper")
-include("libs:scrapper")
+include("libs:scraper")
 include("libs:market")

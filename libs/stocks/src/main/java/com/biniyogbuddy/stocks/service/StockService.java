@@ -5,11 +5,9 @@ import com.biniyogbuddy.common.exception.ResourceNotFoundException;
 import com.biniyogbuddy.stocks.dto.StockRequest;
 import com.biniyogbuddy.stocks.dto.StockResponse;
 import com.biniyogbuddy.stocks.entity.Stock;
+import com.biniyogbuddy.stocks.entity.StockStatus;
 import com.biniyogbuddy.stocks.repository.StockRepository;
-import com.biniyogbuddy.users.entity.User;
-import com.biniyogbuddy.users.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,70 +18,61 @@ import java.util.List;
 public class StockService {
 
     private final StockRepository stockRepository;
-    private final UserRepository userRepository;
     private final MessageResource messageResource;
 
     @Transactional(readOnly = true)
-    public List<StockResponse> getAllForCurrentUser() {
-        User user = getCurrentUser();
-        return stockRepository.findAllByUserId(user.getId())
+    public List<StockResponse> getAll() {
+        return stockRepository.findAll()
                 .stream()
                 .map(this::toResponse)
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public StockResponse getById(Long id) {
+        Stock stock = stockRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        messageResource.getMessage("stock.error.not.found", id)));
+        return toResponse(stock);
+    }
+
     @Transactional
     public StockResponse create(StockRequest request) {
-        User user = getCurrentUser();
         Stock stock = Stock.builder()
-                .user(user)
-                .stockName(request.stockName())
-                .dseCode(request.dseCode())
-                .cseCode(request.cseCode())
-                .sector(request.sector())
+                .companyName(request.companyName())
+                .tradingCode(request.tradingCode())
+                .status(StockStatus.LISTED)
                 .build();
         return toResponse(stockRepository.save(stock));
     }
 
     @Transactional
     public StockResponse update(Long id, StockRequest request) {
-        User user = getCurrentUser();
-        Stock stock = findByIdAndUser(id, user.getId());
-        stock.setStockName(request.stockName());
-        stock.setDseCode(request.dseCode());
-        stock.setCseCode(request.cseCode());
-        stock.setSector(request.sector());
+        Stock stock = stockRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        messageResource.getMessage("stock.error.not.found", id)));
+        stock.setCompanyName(request.companyName());
+        stock.setTradingCode(request.tradingCode());
         return toResponse(stockRepository.save(stock));
     }
 
     @Transactional
     public void delete(Long id) {
-        User user = getCurrentUser();
-        Stock stock = findByIdAndUser(id, user.getId());
-        stock.setDeleted(true);
-        stockRepository.save(stock);
-    }
-
-    private Stock findByIdAndUser(Long id, Long userId) {
-        return stockRepository.findByIdAndUserId(id, userId)
+        Stock stock = stockRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         messageResource.getMessage("stock.error.not.found", id)));
-    }
-
-    private User getCurrentUser() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        messageResource.getMessage("stock.error.user.not.found")));
+        stock.setStatus(StockStatus.DELISTED);
+        stockRepository.save(stock);
     }
 
     private StockResponse toResponse(Stock stock) {
         return new StockResponse(
                 stock.getId(),
-                stock.getStockName(),
-                stock.getDseCode(),
-                stock.getCseCode(),
+                stock.getTradingCode(),
+                stock.getCompanyName(),
+                stock.getShortName(),
                 stock.getSector(),
+                stock.getStatus(),
                 stock.getCreatedAt(),
                 stock.getUpdatedAt()
         );

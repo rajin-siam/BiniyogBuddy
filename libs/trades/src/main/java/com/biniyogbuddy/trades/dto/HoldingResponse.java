@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 public record HoldingResponse(
         Long stockJournalId,
-        String stockName,
-        String dseCode,
+        String companyName,
+        String tradingCode,
         Integer netQuantity,
         BigDecimal avgBuyPrice,
         BigDecimal totalInvested

@@ -24,9 +24,15 @@ public class StockController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<StockResponse>>> getAll() {
-        List<StockResponse> stocks = stockService.getAllForCurrentUser();
+        List<StockResponse> stocks = stockService.getAll();
         String message = messageResource.getMessage("stock.list.success");
         return ResponseEntity.ok(new ApiResponse<>(message, "success", stocks));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<StockResponse>> getById(@PathVariable Long id) {
+        StockResponse stock = stockService.getById(id);
+        return ResponseEntity.ok(new ApiResponse<>("success", "success", stock));
     }
 
     @PostMapping
