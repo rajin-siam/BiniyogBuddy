@@ -45,8 +45,28 @@ services:
       SPRING_DATASOURCE_PASSWORD: mbstusiam
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-secret-key}
     ports:
       - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  dse-scraper:
+    build:
+      context: ../services/dse-scraper
+    container_name: biniyogbuddy-scraper
+    depends_on:
+      api-app:
+        condition: service_healthy
+    environment:
+      SPRING_INGEST_URL: http://api-app:8080/internal/ingest
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-secret-key}
+      SCRAPE_INTERVAL_MINUTES: ${SCRAPE_INTERVAL_MINUTES:-10}
     restart: unless-stopped
 
 volumes:

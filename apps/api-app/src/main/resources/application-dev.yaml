@@ -59,6 +59,9 @@ app:
     email: ${SUPER_ADMIN_EMAIL:admin@biniyogbuddy.com}
     password: ${SUPER_ADMIN_PASSWORD:admin123}
 
+internal:
+  api-key: ${INTERNAL_API_KEY:dev-secret-key}
+
 logging:
   level:
     root: INFO

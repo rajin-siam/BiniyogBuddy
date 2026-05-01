@@ -12,15 +12,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
         "com.biniyogbuddy.users.repository",
         "com.biniyogbuddy.stocks.repository",
         "com.biniyogbuddy.trades.repository",
-        "com.biniyogbuddy.market.repository",
-        "com.biniyogbuddy.scraper.repository"
+        "com.biniyogbuddy.market.repository"
 })
 @EntityScan(basePackages = {
         "com.biniyogbuddy.users.entity",
         "com.biniyogbuddy.stocks.entity",
         "com.biniyogbuddy.trades.entity",
-        "com.biniyogbuddy.market.entity",
-        "com.biniyogbuddy.scraper.entity"
+        "com.biniyogbuddy.market.entity"
 })
 public class BiniyogBuddyApplication {
 

@@ -24,14 +24,8 @@ public class Sector {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String slug;
-
     @Column(nullable = false)
     private String name;
-
-    @Column(name = "stock_count")
-    private Integer stockCount;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

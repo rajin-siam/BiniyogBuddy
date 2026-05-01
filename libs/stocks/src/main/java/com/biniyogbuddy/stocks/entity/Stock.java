@@ -28,7 +28,7 @@ public class Stock {
     @Column(name = "trading_code", unique = true, nullable = false)
     private String tradingCode;
 
-    @Column(name = "company_name", nullable = false)
+    @Column(name = "company_name")
     private String companyName;
 
     @Column(name = "short_name")

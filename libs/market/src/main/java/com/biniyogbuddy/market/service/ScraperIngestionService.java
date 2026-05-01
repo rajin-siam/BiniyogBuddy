@@ -1,15 +1,15 @@
-package com.biniyogbuddy.scraper.service;
+package com.biniyogbuddy.market.service;
 
+import com.biniyogbuddy.common.dto.ScrapedPayload;
+import com.biniyogbuddy.common.dto.ScrapedPayload.IndexDataDto;
+import com.biniyogbuddy.common.dto.ScrapedPayload.MarketStatsDto;
+import com.biniyogbuddy.common.dto.ScrapedPayload.StockRowDto;
 import com.biniyogbuddy.market.entity.IndexHistory;
 import com.biniyogbuddy.market.entity.IndexName;
 import com.biniyogbuddy.market.entity.MarketSnapshot;
 import com.biniyogbuddy.market.entity.MarketStatus;
 import com.biniyogbuddy.market.repository.IndexHistoryRepository;
 import com.biniyogbuddy.market.repository.MarketSnapshotRepository;
-import com.biniyogbuddy.scraper.dto.RawScrapedData.RawIndexData;
-import com.biniyogbuddy.scraper.dto.RawScrapedData.RawMarketStats;
-import com.biniyogbuddy.scraper.dto.RawScrapedData.RawStockRow;
-import com.biniyogbuddy.scraper.dto.RawScrapedData.ScrapedPage;
 import com.biniyogbuddy.stocks.entity.Stock;
 import com.biniyogbuddy.stocks.entity.StockPrice;
 import com.biniyogbuddy.stocks.entity.StockStatus;
@@ -39,28 +39,26 @@ public class ScraperIngestionService {
     private final IndexHistoryRepository indexHistoryRepository;
 
     @Transactional
-    public void ingest(ScrapedPage page) {
+    public void ingest(ScrapedPayload payload) {
         LocalDate today = LocalDate.now();
-        ingestStockPrices(page.getStockRows());
-        ingestMarketSnapshot(page.getIndexData(), page.getMarketStats(), page.getMarketStatus(), today);
-        ingestIndexHistory(page.getIndexData(), today);
+        ingestStockPrices(payload.getStockRows());
+        ingestMarketSnapshot(payload.getIndexData(), payload.getMarketStats(), payload.getMarketStatus(), today);
+        ingestIndexHistory(payload.getIndexData(), today);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
 
-    private void ingestStockPrices(List<RawStockRow> rows) {
-        // batch-load existing stocks
+    private void ingestStockPrices(List<StockRowDto> rows) {
         Map<String, Stock> stockMap = new java.util.HashMap<>(
                 stockRepository.findAll().stream()
                         .collect(Collectors.toMap(Stock::getTradingCode, s -> s))
         );
 
-        // auto-create stocks that are listed on DSE but not yet in our DB
         List<Stock> newStocks = rows.stream()
                 .filter(row -> !stockMap.containsKey(row.getTradingCode()))
                 .map(row -> Stock.builder()
                         .tradingCode(row.getTradingCode())
-                        .companyName(row.getTradingCode())   // placeholder — update later
+                        .companyName(row.getTradingCode())
                         .status(StockStatus.LISTED)
                         .build())
                 .toList();
@@ -71,13 +69,12 @@ public class ScraperIngestionService {
             log.info("Auto-created {} new stock entries", newStocks.size());
         }
 
-        // batch-load existing prices
         Map<Long, StockPrice> priceMap = stockPriceRepository.findAll().stream()
                 .collect(Collectors.toMap(sp -> sp.getStock().getId(), sp -> sp));
 
         List<StockPrice> toSave = new ArrayList<>();
 
-        for (RawStockRow row : rows) {
+        for (StockRowDto row : rows) {
             Stock stock = stockMap.get(row.getTradingCode());
             if (stock == null) continue;
 
@@ -106,17 +103,16 @@ public class ScraperIngestionService {
 
     // ─────────────────────────────────────────────────────────────────────────
 
-    private void ingestMarketSnapshot(List<RawIndexData> indexData,
-                                      RawMarketStats stats,
+    private void ingestMarketSnapshot(List<IndexDataDto> indexData,
+                                      MarketStatsDto stats,
                                       String marketStatus,
                                       LocalDate tradeDate) {
-        // DSE page can return the same index twice (current + previous session) — keep first
-        Map<String, RawIndexData> idxMap = indexData.stream()
-                .collect(Collectors.toMap(RawIndexData::getName, i -> i, (a, b) -> a));
+        Map<String, IndexDataDto> idxMap = indexData.stream()
+                .collect(Collectors.toMap(IndexDataDto::getName, i -> i, (a, b) -> a));
 
-        RawIndexData dsex = idxMap.get("DSEX");
-        RawIndexData dses = idxMap.get("DSES");
-        RawIndexData ds30 = idxMap.get("DS30");
+        IndexDataDto dsex = idxMap.get("DSEX");
+        IndexDataDto dses = idxMap.get("DSES");
+        IndexDataDto ds30 = idxMap.get("DS30");
 
         MarketSnapshot snapshot = MarketSnapshot.builder()
                 .dsexValue(dsex != null ? parseBigDecimal(dsex.getValue()) : null)
@@ -145,11 +141,10 @@ public class ScraperIngestionService {
 
     // ─────────────────────────────────────────────────────────────────────────
 
-    private void ingestIndexHistory(List<RawIndexData> indexData, LocalDate tradeDate) {
-        for (RawIndexData raw : indexData) {
+    private void ingestIndexHistory(List<IndexDataDto> indexData, LocalDate tradeDate) {
+        for (IndexDataDto raw : indexData) {
             IndexName indexName = IndexName.valueOf(raw.getName());
 
-            // upsert: update if already saved today, otherwise insert
             IndexHistory history = indexHistoryRepository
                     .findByIndexNameAndTradeDate(indexName, tradeDate)
                     .orElseGet(() -> IndexHistory.builder()
